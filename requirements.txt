@@ -6,7 +6,4 @@ scikit-learn
 jupyterlab
 ipykernel
 nbclassic
-sqlalchemy
-psycopg2-binary
-python-dotenv
 xgboost

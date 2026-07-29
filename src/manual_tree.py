@@ -128,15 +128,16 @@ class DecisionTree:
         return self._traverse(x, node.right)
 
     
-def print_tree(node, depth=0):
+def print_tree(node, depth=0, branch=""):
 
     indent = "│   " * depth
 
     if node.value is not None:
-        print(indent + f"└── Leaf: Class {node.value}")
+        print(indent + f"└── {branch}Leaf: Class {node.value}")
         return
 
-    print(indent + f"├── X[{node.feature}] <= {node.threshold:.3f}")
+    print(indent + f"├── {branch}X[{node.feature}] <= {node.threshold:.3f}")
 
-    print_tree(node.left, depth + 1)
-    print_tree(node.right, depth + 1)
+    print_tree(node.left, depth + 1, branch="[<=] ")
+    print_tree(node.right, depth + 1, branch="[> ] ")
+    
