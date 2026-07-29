@@ -1,4 +1,4 @@
-# Tabular Ensemble + Feature-Removal Ablation
+# Tabular Ensemble Showdown + Feature-Removal Ablation
 
 ## Problem statement
 
@@ -30,7 +30,11 @@ by hand.
    (`Sex`, `Embarked`, `Pclass`) mode-imputed and one-hot encoded via a `ColumnTransformer`.
    `PassengerId`, `Name`, `Ticket`, `Cabin` dropped. 7 raw columns → 12 model-ready features.
 3. **Manual split criterion** (Iris) — Gini, entropy, information gain, a best-split
-   search, and a recursive depth-limited tree, validated against sklearn.
+   search, and a recursive depth-limited tree, validated against sklearn. Gini and entropy
+   were also compared node-by-node against each other (not just by final accuracy): both
+   picked the *identical* split at every single node — same feature, same threshold, same
+   leaf classes throughout, so the matching 0.97 accuracy isn't a coincidence of two
+   different trees landing on the same score.
 4. **Random Forest** — tuned via `GridSearchCV`, `StratifiedKFold`, scored on F1,
    `class_weight="balanced"`.
 5. **XGBoost** — same tuning/scoring standard.
@@ -111,7 +115,9 @@ Best: `{max_depth: 10, max_features: sqrt, min_samples_split: 10, n_estimators: 
 **XGBoost** — grid: `n_estimators` [100, 200], `max_depth` [3, 5, 7],
 `learning_rate` [0.01, 0.1, 0.2], `subsample` [0.8, 1.0].
 Best: `{learning_rate: 0.2, max_depth: 3, n_estimators: 200, subsample: 1.0}`
-→ CV F1 **0.7672**.
+→ CV F1 **0.7672**. (Cell 51 previously ran `list(grid_search.best_params_)`, which only
+prints parameter *names* — fixed to print the dict directly, so these values are now
+traceable to an actual cell output, not just asserted here.)
 
 CV scores were nearly identical (0.7687 vs. 0.7672) — close enough that the test-set split
 by metric (XGBoost ahead on accuracy/precision, Random Forest ahead on recall/F1/ROC-AUC)
@@ -132,6 +138,3 @@ is the more informative comparison than the CV ranking alone.
   being uninformative on its own.
 - **Threshold tuning** instead of the default 0.5 cutoff, now that Step 8 shows the two
   models trade off precision vs. recall differently.
-- **Fix the Step 5 hyperparameter display** — `list(grid_search.best_params_)` only prints
-  the parameter *names*, not their values (`dict(...)` or printing the object directly
-  would show both).
